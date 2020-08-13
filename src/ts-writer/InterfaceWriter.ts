@@ -17,6 +17,6 @@ export class InterfaceWriter implements Writer, BaseType {
   }
 
   getTypeName(): string {
-    return "interface";
+    return this.name;
   }
 }

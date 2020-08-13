@@ -26,3 +26,14 @@ test("array", () => {
     "type TestArray = ReadonlyArray<string>;\n"
   );
 });
+
+test("array of custom type", () => {
+  const stringStream = new BufferedStringStream();
+  const customType = new InterfaceWriter("CustomType", new InterfaceFieldsWriter(new Map()));
+  const source = new ArrayWriter("TestArray", customType);
+  source.write(stringStream);
+
+  expect(stringStream.toString()).toBe(
+    "type TestArray = ReadonlyArray<CustomType>;\n"
+  );
+});
