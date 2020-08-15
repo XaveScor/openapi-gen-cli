@@ -1,6 +1,6 @@
-import { Writer } from "./Writer";
-import { BufferedStream } from "./BufferedStream";
-import { BaseType } from "./BaseType";
+import { Writer } from "../base-writer/Writer";
+import { BufferedStream } from "../base-writer/BufferedStream";
+import { BaseType } from "../base-writer/BaseType";
 import { InterfaceFieldsWriter } from "./InterfaceFieldsWriter";
 
 export class InterfaceWriter implements Writer, BaseType {

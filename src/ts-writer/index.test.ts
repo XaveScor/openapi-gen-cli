@@ -1,4 +1,4 @@
-import { BufferedStringStream } from "./BufferedStringStream";
+import { BufferedStringStream } from "../base-writer/BufferedStringStream";
 import { InterfaceWriter } from "./InterfaceWriter";
 import { InterfaceFieldsWriter } from "./InterfaceFieldsWriter";
 import { StringBaseType } from "./StringBaseType";
@@ -8,7 +8,7 @@ test("interface", () => {
   const stringStream = new BufferedStringStream();
   const source = new InterfaceWriter(
     "TestInterface",
-    new InterfaceFieldsWriter(new Map([["field", new StringBaseType()]]))
+    new InterfaceFieldsWriter(new Map([["field", () => new StringBaseType()]]))
   );
   source.write(stringStream);
 
@@ -19,7 +19,7 @@ test("interface", () => {
 
 test("array", () => {
   const stringStream = new BufferedStringStream();
-  const source = new ArrayWriter("TestArray", new StringBaseType());
+  const source = new ArrayWriter("TestArray", () => new StringBaseType());
   source.write(stringStream);
 
   expect(stringStream.toString()).toBe(
@@ -30,7 +30,7 @@ test("array", () => {
 test("array of custom type", () => {
   const stringStream = new BufferedStringStream();
   const customType = new InterfaceWriter("CustomType", new InterfaceFieldsWriter(new Map()));
-  const source = new ArrayWriter("TestArray", customType);
+  const source = new ArrayWriter("TestArray", () => customType);
   source.write(stringStream);
 
   expect(stringStream.toString()).toBe(
