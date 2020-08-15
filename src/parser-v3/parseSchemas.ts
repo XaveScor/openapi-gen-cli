@@ -20,6 +20,7 @@ interface DirtyPrimitiveType {
 }
 interface DirtyArray {
   type: DirtyType.Array;
+  name: string;
   generic0: RefPath;
 }
 
@@ -77,6 +78,13 @@ function parseSchemasInternal(
           value: "number",
         });
         break;
+      case "array":
+        components.set(path, {
+          type: DirtyType.Array,
+          name,
+          generic0: typeSchema.items.$ref,
+        });
+        break;
     }
   }
 
@@ -128,7 +136,10 @@ function normalize(
         // skip it
         break;
       case DirtyType.Array:
-        // TODO: new feature
+        res.set(component.name, {
+          type: Types.Array,
+          arg: findComponent(component.generic0, pathLinks, components)
+        });
         break;
     }
   }

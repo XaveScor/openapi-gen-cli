@@ -2,7 +2,7 @@ export interface Document {
   components: Components;
 }
 
-export type SchemaObject = {[arg: string]: Ref | Schema};
+export type SchemaObject = { [arg: string]: Ref | Schema };
 
 export interface Components {
   schemas: SchemaObject;
@@ -26,4 +26,9 @@ export interface IntegerSchema {
   format: "int32" | "int64";
 }
 
-export type Schema = ObjectSchema | StringSchema | IntegerSchema
+export interface ArraySchema {
+  type: "array";
+  items: Ref;
+}
+
+export type Schema = ObjectSchema | StringSchema | IntegerSchema | ArraySchema;

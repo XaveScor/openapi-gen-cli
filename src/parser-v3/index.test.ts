@@ -1,5 +1,4 @@
 import { parse } from "./parse";
-import { toDeepObject } from "../helpers/map";
 import { Types } from "../parser-result/types";
 
 test("parse", () => {
@@ -17,6 +16,13 @@ test("parse", () => {
             ["name", "string"],
             ["tag", "string"],
           ]),
+        },
+      ],
+      [
+        "Pets",
+        {
+          type: Types.Array,
+          arg: "Pet",
         },
       ],
       [
