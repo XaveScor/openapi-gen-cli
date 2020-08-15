@@ -9,11 +9,11 @@ export class LazyRegistry {
     this.map.set(name, value);
   }
 
-  get(name): LazyBaseType {
+  get = (name): LazyBaseType => {
     return () => {
       const res = this.map.get(name)
       if (res === undefined) {
-        throw new Error()
+        throw new Error(`${name} not found in registry`)
       }
 
       return res;
