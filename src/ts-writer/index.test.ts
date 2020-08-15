@@ -3,6 +3,7 @@ import { InterfaceWriter } from "./InterfaceWriter";
 import { InterfaceFieldsWriter } from "./InterfaceFieldsWriter";
 import { StringBaseType } from "./StringBaseType";
 import { ArrayWriter } from "./ArrayWriter";
+import {NumberBaseType} from "./NumberBaseType";
 
 test("interface", () => {
   const stringStream = new BufferedStringStream();
@@ -37,3 +38,13 @@ test("array of custom type", () => {
     "type TestArray = ReadonlyArray<CustomType>;\n"
   );
 });
+
+test("array of numbers", () => {
+  const stringStream = new BufferedStringStream();
+  const source = new ArrayWriter("TestArray", () => new NumberBaseType());
+  source.write(stringStream);
+
+  expect(stringStream.toString()).toBe(
+    "type TestArray = ReadonlyArray<number>;\n"
+  );
+})
