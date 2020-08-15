@@ -3,7 +3,9 @@ import { InterfaceWriter } from "./InterfaceWriter";
 import { InterfaceFieldsWriter } from "./InterfaceFieldsWriter";
 import { StringBaseType } from "./StringBaseType";
 import { ArrayWriter } from "./ArrayWriter";
-import {NumberBaseType} from "./NumberBaseType";
+import { NumberBaseType } from "./NumberBaseType";
+import { FunctionWriter } from "./FunctionWriter";
+import { FunctionArgsWriter } from "./FunctionArgsWriter";
 
 test("interface", () => {
   const stringStream = new BufferedStringStream();
@@ -30,7 +32,10 @@ test("array", () => {
 
 test("array of custom type", () => {
   const stringStream = new BufferedStringStream();
-  const customType = new InterfaceWriter("CustomType", new InterfaceFieldsWriter(new Map()));
+  const customType = new InterfaceWriter(
+    "CustomType",
+    new InterfaceFieldsWriter(new Map())
+  );
   const source = new ArrayWriter("TestArray", () => customType);
   source.write(stringStream);
 
@@ -47,4 +52,23 @@ test("array of numbers", () => {
   expect(stringStream.toString()).toBe(
     "type TestArray = ReadonlyArray<number>;\n"
   );
-})
+});
+
+test("function", () => {
+  const stringStream = new BufferedStringStream();
+  const source = new FunctionWriter(
+    "testFunction",
+    new FunctionArgsWriter(
+      new Map([
+        ["arg1", () => new StringBaseType()],
+        ["arg2", () => new NumberBaseType()],
+      ])
+    ),
+    () => new StringBaseType()
+  );
+
+  source.write(stringStream);
+  expect(stringStream.toString()).toBe(
+    "type testFunctionFunctionType = typeof testFunction;\nexport function testFunction(\narg1: string,\narg2: number,\n): string {}\n"
+  );
+});
