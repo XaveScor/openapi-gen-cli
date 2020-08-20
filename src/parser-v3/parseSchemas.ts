@@ -6,17 +6,22 @@ type RefPath = string;
 
 enum DirtyType {
   Object,
-  Primitive,
   Array,
+  Number,
+  String,
 }
 interface DirtyObject {
   type: DirtyType.Object;
   name: string;
   properties: Map<string, RefPath>;
 }
-interface DirtyPrimitiveType {
-  type: DirtyType.Primitive;
-  value: "string" | "number";
+interface DirtyNumberType {
+  name: string;
+  type: DirtyType.Number;
+}
+interface DirtyStringType {
+  name: string;
+  type: DirtyType.String;
 }
 interface DirtyArray {
   type: DirtyType.Array;
@@ -24,7 +29,11 @@ interface DirtyArray {
   generic0: RefPath;
 }
 
-type TotalDirtyType = DirtyObject | DirtyPrimitiveType | DirtyArray;
+type TotalDirtyType =
+  | DirtyObject
+  | DirtyNumberType
+  | DirtyStringType
+  | DirtyArray;
 
 interface ParseSchemasResult {
   pathLinks: Map<RefPath, RefPath>;
@@ -60,7 +69,7 @@ function parseSchemasInternal(
 
         components.set(path, {
           type: DirtyType.Object,
-          name: name,
+          name,
           properties: propertiesData.entryPoints,
         });
         mapAssign(pathLinks, propertiesData.pathLinks);
@@ -68,14 +77,14 @@ function parseSchemasInternal(
         break;
       case "string":
         components.set(path, {
-          type: DirtyType.Primitive,
-          value: "string",
+          type: DirtyType.String,
+          name,
         });
         break;
       case "integer":
         components.set(path, {
-          type: DirtyType.Primitive,
-          value: "number",
+          type: DirtyType.Number,
+          name,
         });
         break;
       case "array":
@@ -110,8 +119,10 @@ function findComponent(
   switch (component.type) {
     case DirtyType.Object:
       return component.name;
-    case DirtyType.Primitive:
-      return component.value;
+    case DirtyType.Number:
+      return "number";
+    case DirtyType.String:
+      return "string";
     case DirtyType.Array:
       break;
   }
@@ -122,7 +133,7 @@ function normalize(
   components: Map<RefPath, TotalDirtyType>
 ): Map<string, TotalType> {
   const res = new Map<string, TotalType>();
-  for (let component of components.values()) {
+  for (const component of components.values()) {
     switch (component.type) {
       case DirtyType.Object:
         res.set(component.name, {
@@ -132,13 +143,20 @@ function normalize(
           ),
         });
         break;
-      case DirtyType.Primitive:
-        // skip it
+      case DirtyType.Number:
+        res.set(component.name, {
+          type: Types.Number,
+        });
+        break;
+      case DirtyType.String:
+        res.set(component.name, {
+          type: Types.String,
+        });
         break;
       case DirtyType.Array:
         res.set(component.name, {
           type: Types.Array,
-          arg: findComponent(component.generic0, pathLinks, components)
+          arg: findComponent(component.generic0, pathLinks, components),
         });
         break;
     }
