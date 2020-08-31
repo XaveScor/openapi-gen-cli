@@ -32,8 +32,14 @@ export interface PromiseType {
   arg: GlobalTypeName;
 }
 
+export enum StringFormat {
+  Equal,
+  Byte,
+  Binary,
+}
 interface StringType {
   type: Types.String;
+  format: StringFormat;
 }
 
 interface NumberType {
@@ -42,6 +48,12 @@ interface NumberType {
 
 export type GlobalTypeName = string;
 
-export type TotalType = Object | Array | FunctionType | PromiseType | StringType | NumberType;
+export type TotalType =
+  | Object
+  | Array
+  | FunctionType
+  | PromiseType
+  | StringType
+  | NumberType;
 
 export type GlobalTypes = Map<GlobalTypeName, TotalType>;

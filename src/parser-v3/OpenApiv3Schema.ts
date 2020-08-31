@@ -59,6 +59,7 @@ export interface ObjectSchema {
 
 export interface StringSchema {
   type: "string";
+  format?: "byte" | "binary";
 }
 
 export interface IntegerSchema {

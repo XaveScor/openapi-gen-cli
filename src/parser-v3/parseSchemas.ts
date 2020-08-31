@@ -1,6 +1,6 @@
 import { Document } from "./OpenApiv3Schema";
 import { mapAssign, mapValues } from "../helpers/map";
-import { TotalType, Types } from "../parser-result/types";
+import { StringFormat, TotalType, Types } from "../parser-result/types";
 
 type RefPath = string;
 
@@ -22,6 +22,7 @@ interface DirtyNumberType {
 interface DirtyStringType {
   name: string;
   type: DirtyType.String;
+  format: StringFormat;
 }
 interface DirtyArray {
   type: DirtyType.Array;
@@ -39,6 +40,18 @@ interface ParseSchemasResult {
   pathLinks: Map<RefPath, RefPath>;
   components: Map<RefPath, TotalDirtyType>;
   entryPoints: Map<string, RefPath>;
+}
+
+function parseStringFormat(format?: "byte" | "binary"): StringFormat {
+  switch (format) {
+    case "byte":
+      return StringFormat.Byte;
+    case "binary":
+      return StringFormat.Binary;
+    case undefined:
+    default:
+      return StringFormat.Equal;
+  }
 }
 
 function parseSchemasInternal(
@@ -78,6 +91,7 @@ function parseSchemasInternal(
       case "string":
         components.set(path, {
           type: DirtyType.String,
+          format: parseStringFormat(typeSchema.format),
           name,
         });
         break;
@@ -151,6 +165,7 @@ function normalize(
       case DirtyType.String:
         res.set(component.name, {
           type: Types.String,
+          format: component.format,
         });
         break;
       case DirtyType.Array:
