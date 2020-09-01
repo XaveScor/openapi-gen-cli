@@ -23,6 +23,7 @@ interface DirtyStringType {
   name: string;
   type: DirtyType.String;
   format: StringFormat;
+  title: string;
 }
 interface DirtyArray {
   type: DirtyType.Array;
@@ -93,6 +94,7 @@ function parseSchemasInternal(
           type: DirtyType.String,
           format: parseStringFormat(typeSchema.format),
           name,
+          title: typeSchema.title ?? "",
         });
         break;
       case "integer":
@@ -166,6 +168,7 @@ function normalize(
         res.set(component.name, {
           type: Types.String,
           format: component.format,
+          title: component.title,
         });
         break;
       case DirtyType.Array:

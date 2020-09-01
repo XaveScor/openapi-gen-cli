@@ -40,6 +40,7 @@ export enum StringFormat {
 interface StringType {
   type: Types.String;
   format: StringFormat;
+  title: string;
 }
 
 interface NumberType {
